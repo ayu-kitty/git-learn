@@ -1,0 +1,80 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: 数据整理
+required:
+    - path
+properties:
+    path:
+        type: object
+        properties:
+            rawdatafile:
+                type: string
+                default: "oecloud/rawdata/rawdatafile.txt"
+                description: 数据保存文件
+            datafile:
+                type: string
+                default: "oecloud/rawdata/datafile.txt"
+                description: 数据保存文件
+            infofile:
+                type: string
+                default: "oecloud/rawdata/infofile.txt"
+                description: 信息保存文件
+            classfile:
+                type: string
+                default: "oecloud/rawdata/classfile.yaml"
+                description: 分组信息保存文件
+            classtypefile:
+                type: string
+                default: "oecloud/rawdata/classtype.xlsx"
+                description: 分组信息保存文件
+            comparefile:
+                type: string
+                default: "oecloud/rawdata/compare.yaml"
+                description: 比较组信息保存文件
+            config_savepath:
+                type: string
+                default: "oecloud/config"
+                description: config保存路径
+            mulstatistics_rds_savepath:
+                type: string
+                default: "oecloud/mulstatisticsanalyst"
+                description: 多元统计运算结果保存路径
+            projectpath:
+                type: string
+                default: "多元统计分析"
+                description: 项目结果路径
+    params:
+        type: object
+        properties:
+            mulstatistics_all:
+                type: boolean
+                default: false
+                description: 是否进行所有样本的分析
+            mulstatistics_all-qc:
+                type: boolean
+                default: false
+                description: 是否进行除qc外的所有样本的分析
+            mulstatistics_mode:
+                type: array
+                default:
+                    - PCA
+                    - PLS-DA
+                    - OPLS-DA
+                description: 数据模式
+            imagetype:
+                type: array
+                default:
+                    - png
+                    - pdf
+                description: 图片保存格式
+            imagetype_other:
+                type: array
+                default:
+                    - html
+                description: 图片保存格式
+            plot_permutation:
+                type: object
+                properties:
+                    permutation_mode:
+                        type: string
+                        default: "OPLS-DA"
+                        description: 相应检测排序来源

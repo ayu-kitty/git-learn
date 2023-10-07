@@ -1,0 +1,47 @@
+---
+title: "脂质相关绘图"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{脂质相关绘图}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# 脂质相关绘图
+
+测试数据路径:`r lmbio::databasepath("database/test/2023-04-19脂质相关绘图",exist = F)`
+
+```{r setup, include=FALSE}
+library(lmbio)
+```
+
+plotdata.xlsx 为原始数据。
+
+group.xlsx 为分组信息数据。
+
+wbsave 为是否导出绘图数据。
+
+## 示例1 各类别脂质总碳数差异分析热图
+
+```
+Lipid_Carbon_plot()
+```
+
+## 示例2 各类别脂质总不饱和度差异分析热图
+
+```
+Lipid_Unsaturation_plot()
+```
+
+## 示例3 各类别脂质总碳数和总不饱和度差异分析气泡图
+
+```
+Lipid_point_plot()
+``` 

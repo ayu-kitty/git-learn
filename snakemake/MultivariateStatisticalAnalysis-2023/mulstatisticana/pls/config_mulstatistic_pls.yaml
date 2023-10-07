@@ -1,0 +1,8 @@
+path:
+    datafile: "oecloud/rawdata/datafile.txt"
+    classfile: "oecloud/rawdata/classfile.yaml"
+compare:
+    - WT-vs-KO
+    - WT-Air-vs-KO-Air
+    - WT-O3-vs-KO-O3
+    - WT-O3-vs-KO-O3-vs-WT-Air-vs-KO-Air

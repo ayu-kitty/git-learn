@@ -1,0 +1,115 @@
+---
+title: "空代共定位分析流程"
+output:
+  html_document:
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{空代共定位分析流程}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# package spatial
+
+空代共定位分析流程
+
+- 1.空代HE染色图与切片图对齐
+- 2.代谢物成像图 raw特征、resnet特征相关性分析
+
+## Get started
+
+## CMD调用
+
+```shell
+spatial image_align -O output-path -I imzml-path -H he-path
+spatial image_correlation -O output-path -I imzml-path -H he-path
+```
+## API调用
+
+```python
+ColocalizationAnalysis 类
+# 实例化方法
+class ColocalizationAnalysis:
+    output_folder: str
+    imzml_path: Union[str, List[str]]
+    he_path: Union[str, List[str]]
+    
+# 实例化 
+from lmbio.spatialmetabolism.spatial.spatialMeta import ColocalizationAnalysis
+ca = ColocalizationAnalysis(output_folder="your-output-path", 
+                                imzml_path="your-imzml-path",
+                                he_path="your-he-path")    
+
+# 1.图像对齐 part
+ca = ColocalizationAnalysis(output_folder, imzml_path, he_path)
+df = ca.getCoordinates(imzml_path)
+## 自动
+fig_file = ca.heMatch(imzml_path, he_path, df, image_type=image_type)
+## 手动
+ca.heMatchManual(imzml_path, he_path, fig_file,
+                 image_type=image_type,
+                 ps=ps,
+                 tv=tv,
+                 bg_alpha=bg_alpha,
+                 fig_alpha=fig_alpha,
+                 pixel_thresh=pixel_thresh, num=num,
+                 ymax_adj=ymax_adj, ymin_adj=ymin_adj,
+                 xmax_adj=xmax_adj, xmin_adj=xmin_adj,
+                 ymax_adj_=ymax_adj_, ymin_adj_=ymin_adj_,
+                 xmax_adj_=xmax_adj_, xmin_adj_=xmin_adj_,
+                 interaction=interaction,
+                 rotate_angle=rotate_angle,
+                 flip=flip,
+                 flop=flop,
+                 resize=resize,
+                 fig_width=fig_width,
+                 fig_height=fig_height
+                 )
+# 2.共定位分析部分
+fig_data = ca.get_fig_data(imzml_path, he_path)
+ca.correlation_raw_metabolite(imzml_path, he_path, fig_data,
+                              selectmz=selectmz,
+                              corfilter=corfilter,
+                              corfiltertype=corfiltertype,
+                              pfilter=pfilter,
+                              adjust=adjust,
+                              cormethod=cormethod,
+                              use=use,
+                              xname=xname,
+                              yname=yname)
+resnet_data = ca.get_resnet_data(imzml_path, he_path, fig_data)
+ca.correlation_resnet(imzml_path, he_path, resnet_data,
+                      selectmz=selectmz,
+                      corfilter=corfilter,
+                      corfiltertype=corfiltertype,
+                      pfilter=pfilter,
+                      adjust=adjust,
+                      cormethod=cormethod,
+                      use=use,
+                      xname=xname,
+                      yname=yname)
+```
+
+## 输入文件说明
+
+```markdown
+# 最好绝对路径
+imzml文件路径 [imzml配套.ibd即可]
+he染色图路径
+```
+
+## 测试文件路径
+
+`/data/hstore1/database/test/2023-04-24空代共定位/test1`
+
+## 查看帮助文档
+
+```markdown
+spatial --help
+spatial image_align --help
+spatial image_correlation --help
+```

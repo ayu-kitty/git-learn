@@ -1,0 +1,51 @@
+---
+title: "靶向代谢数据提取"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{靶向代谢数据提取}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# 靶向代谢数据提取
+
+测试数据路径:`r lmbio::databasepath("database/test/2023-06-14靶向代谢数据",exist = F)`
+
+
+## 数据准备
+
+TLCMS-胆汁酸.xlsx
+
+胆汁酸-标品信息表.xlsx
+
+DZLM2023040203-results-20230420(40-IS).txt
+
+
+
+
+
+## 运行脚本
+
+```R
+datafech_targettlcms -tl TLCMS-胆汁酸.xlsx -qi 胆汁酸-标品信息表.xlsx -d "DZLM2023040203-results-20230420(40-IS).txt"
+```
+
+### 参数说明
+
+|短参数  |长参数 |功能 |
+| ------- | ----- | ---- |
+| -ip | --inputpath | 分析数据输入路径 |
+| -tl | --tlcms| 基本信息表 |
+| -qi | --qcinfo | 标准信息表 |
+| -d | --rawData | 下机数据 |
+
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

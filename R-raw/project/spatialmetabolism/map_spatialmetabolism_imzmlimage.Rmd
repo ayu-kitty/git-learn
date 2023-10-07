@@ -1,0 +1,496 @@
+---
+title: "空代成像图与质谱图处理"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{空代成像图与质谱图处理}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# 成像图`imzmlimage()`
+
+`imzmlimage()`函数功能是绘制空代成像图。
+**主要使用`./sample/final`目录下数据进行绘制。**
+
+```
+# imzmlimage()包含以下函数:
+
+Cardinal::image()
+
+# 参数如下：
+#' @param filename 文件路径
+#' @param savepath 保存路径
+#' @param mapname 保存名称
+#' @param imagetype 图片格式
+#' @param width 图片宽度
+#' @param height 图片长度
+#' @param asp 图像长宽比
+#' @param lightmode 成像模式
+#' @param fun 处理函数
+#' @param smooth.image 是否平滑处理
+#' @param superpose 是否分面绘制
+#' @param normalize.image 归一化模式
+#' @param contrast.enhance 成像强对比
+#' @param xlab x轴标签
+#' @param ylab y轴标签
+#' @param color 成像颜色
+#' @param family 字体
+#' @param mass.range mz范围
+#' @param resolution 分辨率
+#' @param units 分辨率单位
+#' @param subset 区域选择
+#' @param vague 是否虚化
+#' @param iteration 虚化次数
+#' @param maxPixels 虚化上限
+#' @param area 是否绘制选择区域
+#' @param areards 选择区域信息路径
+#' @param areaname 选择区域名称
+#' @param mirrorx 逻辑，x轴镜像对称
+#' @param mirrory 逻辑，y轴镜像对称
+#' @param trans 逻辑，旋转90
+#' @param layout 多样本排布方式
+#' @param intsenityrange 标签范围，c(0,10000)
+#' @param intsenityratiorange 标签比例范围，c(0,0.2)
+#' @param mapmz 逻辑值,是否绘制mz的图
+#' @param attach.only 逻辑，数据是否读取到内存
+#' @param zlim 图例范围
+#' @param figdata HE图片数据
+#' @param figfile HE图片路径
+#' @param addy 是否按照y轴添加
+#' @param addx 是否按照x轴添加
+#' @param filtermz 进行mz筛选
+#' @param ... 见[Cardinal::image()]
+
+```
+
+## 数据准备
+
+```{r}
+suppressMessages(library("Cardinal"))
+suppressMessages(library("lmbio"))
+mse <- simulateImage(preset=3, npeaks=10)
+mse
+```
+
+## 直接对文件及对象均调整的参数
+
+### 示例 常规调用
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           imagetype = NA)
+```
+
+### 示例 强度加合方式
+
+使用最大值进行成像图绘制
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           fun = max,
+           imagetype = NA)
+```
+
+使用均值进行成像图绘制
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           fun = mean,
+           imagetype = NA)
+```
+
+使用中位数进行成像图绘制
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           fun = median,
+           imagetype = NA)
+```
+
+显示成像图每个像素点上表达量大于0的数量
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+calnozeronumber <- function(x){sum(x > 0)}
+imzmlimage(filename = mse,
+           fun = calnozeronumber,
+           imagetype = NA)
+```
+
+### 示例 像素点100*200
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           asp = 2,
+           imagetype = NA)
+```
+
+### 示例 颜色调整
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           color = c("blue","red"),
+           imagetype = NA)
+```
+
+### 示例 背景调整
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           lightmode = T,
+           imagetype = NA)
+```
+
+### 示例 mz范围调整
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           mass.range = c(70,200),
+           imagetype = NA)
+```
+
+### 示例 归一化
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           normalize.image = "linear",
+           imagetype = NA)
+```
+
+### 示例 图像对比强化
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           contrast.enhance = "histogram",
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           contrast.enhance = "suppression",
+           imagetype = NA)
+```
+
+### 示例 图像平滑处理
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+# 默认
+imzmlimage(filename = mse,
+           smooth.image = "gaussian",
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           smooth.image = "none",
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           smooth.image = "adaptive",
+           imagetype = NA)
+```
+
+### 示例 单离子绘制
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           mapmz = T,
+           mz = mz(mse)[1],
+           imagetype = NA)
+```
+
+
+### 示例 多离子叠加绘制
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = mse,
+           mapmz = T,
+           mz = list(c(mz(mse)[1],mz(mse)[2])),
+           col = c("blue","red"),
+           superpose = T,
+           imagetype = NA)
+```
+
+## 仅对`imzML`文件调整的参数
+
+```{r warning = F,message = F}
+path <- tempfile()
+writeMSIData(mse, file=path, outformat="imzML")
+filename <- paste0(path,".imzML")
+```
+
+### 示例 旋转、镜像调整
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+# x轴镜像
+imzmlimage(filename = filename,
+           mirrorx = T,
+           mirrory = F,
+           trans = F,
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+# y轴镜像；x轴镜像，顺时针旋转180度
+imzmlimage(filename = filename,
+           mirrorx = F,
+           mirrory = T,
+           trans = F,
+           imagetype = NA)
+```
+
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+# 顺时针旋转90度
+imzmlimage(filename = filename,
+           mirrorx = F,
+           mirrory = T,
+           trans = T,
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+# 顺时针旋转270度
+imzmlimage(filename = filename,
+           mirrorx = T,
+           mirrory = F,
+           trans = T,
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+# x轴镜像，顺时针旋转270度
+imzmlimage(filename = filename,
+           mirrorx = F,
+           mirrory = F,
+           trans = T,
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+# 顺时针旋转180度
+imzmlimage(filename = filename,
+           mirrorx = T,
+           mirrory = T,
+           trans = F,
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+# x轴镜像，顺时针旋转90度
+imzmlimage(filename = filename,
+           mirrorx = T,
+           mirrory = T,
+           trans = T,
+           imagetype = NA)
+```
+
+### 示例 调整标签范围
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = filename,
+           intsenityrange = c(0,1),
+           imagetype = NA)
+```
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = filename,
+           intsenityratiorange = c(0,0.2),
+           imagetype = NA)
+```
+
+### 示例 扩增质谱数据绘制
+
+```{r fig.height = 3.5,fig.width = 4,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = filename,
+           vague = T,
+           imagetype = NA)
+```
+
+### 示例 多样本调用
+
+```{r warning = F,message = F}
+path2 <- tempfile()
+writeMSIData(mse, file=path2, outformat="imzML")
+filename2 <- paste0(path2,".imzML")
+```
+
+```{r fig.height = 3.5,fig.width = 8,warning = FALSE,message = F,results = "hide"}
+imzmlimage(filename = c(filename,filename2),
+           imagetype = NA)
+```
+
+# 批量成像图函数 `Mulimagemap()`
+
+`Mulimagemap()`函数功能是根据文件夹绘制成像图。**可以调用`imzmlimage()`相关参数**
+
+```
+# Mulimagemap()包含以下函数:
+
+imagemap()   # 绘制成像图
+
+# 参数如下：
+#' @param imzmlpath 数据路径
+#' @param area 是否绘制选择区域
+#' @param areaname 区域名
+#' @param areapath 区域信息文件路径
+#' @param mulname 多样本名称
+#' @param ... 见[imagemap()]
+
+```
+### 示例 正常使用
+```{r eval = FALSE}
+Mulimagemap() # 默认使用./sample/final目录
+```
+
+### 示例 指定数据目录
+```{r eval = FALSE}
+Mulimagemap(mzmlpath = "/home/lujw/meta/test/data/") # 默认使用./sample/final目录
+```
+
+### 示例 修改保存路径
+```{r eval = FALSE}
+Mulimagemap(mzmlpath = "/home/lujw/meta/test/data/", # 默认使用./sample/final目录
+            savepath = "/home/lujw/meta/test/data/") # 默认使用./sample/map/Intensity目录
+```
+
+### 示例 批量绘制选区成像图
+```{r eval = FALSE}
+Mulimagemap(mzmlpath = "/home/lujw/meta/test/data/", # 默认使用./sample/final目录
+            area = T,
+            areapath = "/home/lujw/meta/test/data/", 
+            areaname = "I") 
+```
+
+```{r eval = FALSE}
+Mulimagemap(mzmlpath = "/home/lujw/meta/test/data/", # 默认使用./sample/final目录
+            area = T,
+            areapath = "/home/lujw/meta/test/data/", 
+            areaname = c("I","G"))
+```
+
+
+# 质谱图`imzmlplot()`
+
+`imzmlplot()`函数功能是绘制**所有mz强度加合**的质谱图。
+
+强度加合方式可以为均值，最大值，最小值可以调整。
+
+**主要使用`./sample/final`目录下数据进行绘制**
+
+```
+# imzmlplot()包含以下函数:
+
+Cardinal::plot()
+
+# 参数如下：
+
+#' @param filename 文件路径
+#' @param savepath 保存路径
+#' @param mapname 保存名称
+#' @param imagetype 图片格式
+#' @param width 图片宽度
+#' @param height 图片长度
+#' @param lightmode 成像模式
+#' @param superpose 是否分面绘制
+#' @param family 字体
+#' @param mass.range mz范围
+#' @param resolution 分辨率
+#' @param units 分辨率单位
+#' @param area 是否绘制选择区域
+#' @param areards 选择区域信息路径
+#' @param attach.only 逻辑，数据是否读取到内存
+#' @param layout 多样本排布方式
+#' @param addgroup 逻辑，是否添加组别信息
+#' @param mapmz 逻辑值,是否绘制mz的图
+#' @param mz mz值，为空时自动提取
+#' @param ... 见[Cardinal::plot()]
+
+```
+
+## 直接对文件及对象均调整的参数
+
+### 示例 常规调用
+
+```{r fig.height = 3,fig.width = 5,warning = FALSE,message = F,results = "hide"}
+imzmlplot(filename = mse,
+          imagetype = NA)
+```
+
+### 示例 强度加合方式
+
+```{r fig.height = 3,fig.width = 5,warning = FALSE,message = F,results = "hide"}
+imzmlplot(filename = mse,
+          fun = max,
+          imagetype = NA)
+```
+
+### 示例 调整y轴
+
+```{r fig.height = 3,fig.width = 5,warning = FALSE,message = F,results = "hide"}
+imzmlplot(filename = mse,
+          ylim = c(0,0.1),
+          imagetype = NA)
+```
+
+## 仅对`imzML`文件调整的参数
+
+### 示例 设置mz范围
+
+```{r fig.height = 3,fig.width = 5,warning = FALSE,message = F,results = "hide"}
+imzmlplot(filename = filename,
+          mass.range = c(800,900),
+          imagetype = NA)
+```
+
+
+# 批量质谱图函数 `Mulplotmap()`
+
+`Mulplotmap()`函数功能是根据文件夹绘制成像图。**可以调用`imzmlplot()`相关参数**
+
+```
+# Mulplotmap()包含以下函数:
+
+plotmap()   # 绘制成像图
+
+# 参数如下：
+#' @param area 是否绘制选择区域
+#' @param areaname 区域名
+#' @param areapath 区域信息文件路径
+#' @param imzmlpath 数据路径
+#' @param ... 见[plotmap()]
+
+```
+### 示例 正常使用
+```{r eval = FALSE}
+Mulplotmap()
+```
+
+### 示例 指定数据目录
+```{r eval = FALSE}
+Mulplotmap(mzmlpath = "/home/lujw/meta/test/data/")
+```
+
+### 示例 修改保存路径
+```{r eval = FALSE}
+Mulplotmap(mzmlpath = "/home/lujw/meta/test/data/",
+           savepath = "/home/lujw/meta/test/data/)
+```
+
+### 示例 批量绘制选区成像图
+```{r eval = FALSE}
+Mulplotmap(mzmlpath = "/home/lujw/meta/test/data/",
+           area = T,
+           areapath = "/home/lujw/meta/test/data/",
+           areaname = "I")
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

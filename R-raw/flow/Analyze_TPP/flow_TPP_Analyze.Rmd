@@ -1,0 +1,85 @@
+---
+title: "热敏蛋白分析流程"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{热敏蛋白分析流程}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# 热敏蛋白分析流程
+
+测试数据路径:`r lmbio::databasepath("database/test/2023-03-02热敏蛋白",exist = F)`
+
+## 数据准备
+
+文件必须为xlsx格式，必须包含数据矩阵、分组两个sheet表格，可多添加比较的sheet表格
+
+### sheet-数据矩阵（必须）
+
+可信蛋白或者差异蛋白的表格，由于蛋白过多的情况下分析时间过久，默认限制蛋白数量3000。
+
+### sheet-分组（必须）
+需包含sample、Group、Temp、Name、Condition五列
+
+- sample：在数据矩阵中的样本名
+- Group：样本对应的分组
+- Temp：样本对应的温度
+- Name：根据温度编写的对应名称
+- Condition：仅能填写Vehicle、Treatment
+
+| sample  | Group | Temp | Name | Condition |
+| ------- | ----- | ---- | ---- | --------- |
+| KB_37_1 | Con   | 37   | 37_1 | Vehicle   |
+| KB_37_2 | Con   | 37   | 37_2 | Vehicle   |
+| KB_37_3 | Con   | 37   | 37_3 | Vehicle   |
+| B_37_1  | Exp   | 37   | 37_1 | Treatment |
+| B_37_2  | Exp   | 37   | 37_2 | Treatment |
+| B_37_3  | Exp   | 37   | 37_3 | Treatment |
+| KB_40_1 | Con   | 40   | 40_1 | Vehicle   |
+| KB_40_2 | Con   | 40   | 40_2 | Vehicle   |
+| KB_40_3 | Con   | 40   | 40_3 | Vehicle   |
+| B_40_1  | Exp   | 40   | 40_1 | Treatment |
+| B_40_2  | Exp   | 40   | 40_2 | Treatment |
+| B_40_3  | Exp   | 40   | 40_3 | Treatment |
+| KB_43_1 | Con   | 43   | 43_1 | Vehicle   |
+| KB_43_2 | Con   | 43   | 43_2 | Vehicle   |
+| KB_43_3 | Con   | 43   | 43_3 | Vehicle   |
+| B_43_1  | Exp   | 43   | 43_1 | Treatment |
+| B_43_2  | Exp   | 43   | 43_2 | Treatment |
+| B_43_3  | Exp   | 43   | 43_3 | Treatment |
+| KB_46_1 | Con   | 46   | 46_1 | Vehicle   |
+| KB_46_2 | Con   | 46   | 46_2 | Vehicle   |
+
+### 比较（非必须）
+
+| 比较组  |
+| ------- |
+| Exp/Con |
+
+## 运行脚本
+
+```R
+TPPAnalyze.R -f 数据路径
+```
+
+### 参数说明
+
+| 短参数  | 长参数 | 功能 |
+| ------- | ----- | ---- |
+| -f | --filename | 输入文件路径 |
+| -n | --namelist | Gene或者Protein的列名 |
+| -m | --maxfeaturenum | 最大蛋白特征数量 |
+| -r | --resultPath | 结果输出路径 |
+| -nm | --normalize | 是否进行标准化 |
+| -mt | --methods | TPP运算算法，可选meltcurvefit、splinefit |
+| -z | --zip | 是否压缩 |
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

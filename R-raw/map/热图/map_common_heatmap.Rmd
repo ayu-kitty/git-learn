@@ -1,0 +1,206 @@
+---
+title: "Heatmap绘制"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{Heatmap绘制}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+`map_common_heatmap`函数为绘制热图使用。主要参数见`pheatmap::pheatmap`。
+
+
+## 数据准备
+
+数据为dataframe格式,数据格式如下：
+
+```{r}
+test <- matrix(abs(rnorm(200)), 20, 10)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:10, sep = "")
+rownames(test) <- paste("Gene", 1:20, sep = "")
+```
+
+```{r include = FALSE,warning = FALSE,results = 'hide'}
+library("DT")
+library("lmbio")
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+## 绘图使用
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   imagetype = NA)
+```
+
+
+## 进阶使用
+
+### 示例1 横竖均聚类
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   cluster_rows = T,
+                   cluster_cols = T,
+                   imagetype = NA)
+```
+
+### 示例2 不同归一化模式
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   scale = "row", # 横归一化
+                   imagetype = NA)
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   scale = "column", # 竖归一化
+                   imagetype = NA)
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   scale = "none", # 不归一化
+                   imagetype = NA)
+```
+
+### 示例3 行名列名显示及方向更改
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   show_rownames = F, # 是否显示行名
+                   show_colnames = T, # 是否显示列名
+                   angle_col = 45, # 列名旋转角度
+                   imagetype = NA)
+```
+
+### 示例4 行名列名显示及方向更改
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   show_rownames = F, # 是否显示行名
+                   show_colnames = T, # 是否显示列名
+                   angle_col = 45, # 列名旋转角度
+                   imagetype = NA)
+```
+
+### 示例5 log处理
+
+使用时要确保数据中无0及负数。
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   log = T,
+                   imagetype = NA)
+```
+
+### 示例6 列注释
+
+```{r}
+test <- matrix(abs(rnorm(200)), 20, 10)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:10, sep = "")
+rownames(test) <- paste("Gene", 1:20, sep = "")
+colgroup <- data.frame(group = c(rep("A",5),rep("B",5)),
+                       group2 = c(rep("C",3),rep("D",3),rep("E",4)))
+rownames(colgroup) <- paste("Test", 1:10, sep = "")
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+```{r echo=FALSE}
+datatable(colgroup,options = list(scrollX = TRUE))
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   annotation_col = colgroup,
+                   imagetype = NA)
+```
+
+#### 其他方式
+
+```{r}
+test <- matrix(abs(rnorm(200)), 20, 10)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:10, sep = "")
+rownames(test) <- paste("Gene", 1:20, sep = "")
+colgroup <- data.frame(group = c(rep("A",5),rep("B",5)),
+                       group2 = c(rep("C",3),rep("D",3),rep("E",4)))
+rownames(colgroup) <- paste("Test", 1:10, sep = "")
+test <- rbind(t(colgroup),test)
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   colgroup = 2, # 输入注释行数
+                   imagetype = NA)
+```
+
+### 示例7 行注释
+
+```{r}
+test <- matrix(abs(rnorm(200)), 20, 10)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:10, sep = "")
+rownames(test) <- paste("Gene", 1:20, sep = "")
+rowgroup <- data.frame(group = c(rep("A",10),rep("B",10)),
+                       group2 = c(rep("C",5),rep("D",5),rep("E",5),rep("F",5)))
+rownames(rowgroup) <- paste("Gene", 1:20, sep = "")
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+```{r echo=FALSE}
+datatable(rowgroup,options = list(scrollX = TRUE))
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   annotation_row = rowgroup,
+                   imagetype = NA)
+```
+
+#### 其他方式
+
+```{r}
+test <- matrix(abs(rnorm(200)), 20, 10)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:10, sep = "")
+rownames(test) <- paste("Gene", 1:20, sep = "")
+rowgroup <- data.frame(group = c(rep("A",10),rep("B",10)),
+                       group2 = c(rep("C",5),rep("D",5),rep("E",5),rep("F",5)))
+rownames(rowgroup) <- paste("Gene", 1:20, sep = "")
+test <- cbind(rowgroup,test)
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_common_heatmap(filename = test,
+                   rowgroup = 2, # 输入注释行数
+                   imagetype = NA)
+```
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

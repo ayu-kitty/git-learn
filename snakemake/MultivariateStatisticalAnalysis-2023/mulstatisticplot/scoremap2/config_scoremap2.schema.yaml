@@ -1,0 +1,26 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: 多元统计分析
+required:
+    - compare
+properties:
+    compare: 
+        type: object
+        patternProperties:
+            ".*":
+                type: object
+                properties:
+                    plot_scoremap2:
+                        type: object
+                        properties: 
+                            family:
+                                type: string
+                                default: "sans"
+                                description: 字体
+                            width:
+                                type: number
+                                default: 8
+                                description: 图片宽度
+                            height:
+                                type: number
+                                default: 5
+                                description: 图片高度

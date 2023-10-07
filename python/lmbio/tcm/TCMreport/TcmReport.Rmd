@@ -1,0 +1,138 @@
+---
+title: "中药成分鉴定报告分析流程"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{中药成分鉴定报告分析流程}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# package TCMreport
+
+中药成分鉴定报告分析流程
+
+- 1.QI数据预处理
+- 2.绘制样本色谱图
+- 3.绘制中药成分EIC图+质谱图 
+- 4.绘制中药成分分类饼图
+- 5.生成oebio报告
+- 6.文件压缩打包
+
+## Get started
+
+## 注意事项
+
+```markdown
+- 指向mzML文件的路径中不要包含中文字符
+- mzML为 Profile模式，不要中心化 <画出的EIC好看>
+- QC文件只能命名为QC.mzML（或者保证定量文件中列名为QC）
+- 测试文件目录 /data/hstore1/database/test/2023-04-24TCMreport
+```
+
+
+
+## CMD调用
+
+```shell
+Usage: lmtcm tcm [OPTIONS]
+Options:
+  -I, --input PATH  输入文件的文件夹路径，路径中不能包含中文  [required]
+  -B, --herb        是否分析HERB库,布尔值标记[加上参数即开启]
+  -M, --water_mask  是否添加水印,布尔值标记[加上参数即开启]
+  --help            Show this message and exit.
+```
+
+
+
+## API调用
+
+```python
+# Report 类
+# 实例化方法
+def __init__(self, data, project: str = "TCM"):
+    """data:    输入文件夹的绝对路径
+       project: 项目类型， 必须为 TCM 或 Blood
+    """
+    self.data = data
+    assert project in ("TCM", "Blood"), "Value Error: 项目类型必须为 TCM 或 Blood。"
+    self._project = project
+    
+# 实例化 
+from lmbio.tcm.TCMreport.TCMreport import Report
+report = Report(data="your-input-path", project="TCM")    
+
+# 运行完整pipeline
+report.run_pipeline()
+
+# 主要类方法
+# QI数据预处理
+report.preprocess_qi()
+# 绘制chromatogram图
+report.plot_chromatograms()
+# 绘制EIC图+质谱图 <very time consuming>
+report.plot_xic(dpi=600, img_size=250)
+# 绘制饼图
+report.plot_pies()
+# 生成oebio报告
+report.oebio_report()
+# 打包文件
+report.zip_report()
+
+# 额外方法
+report.plot_tic()
+```
+
+## 输入文件说明
+
+###  input data directory structure
+测试文件目录： /data/hstore1/database/test/2023-04-24TCMreport
+```markdown
+your-input-path/
+├── mzmldata
+│   ├── NEG
+│   │   ├── M-1.mzML
+│   │   ├── M-2.mzML
+│   │   └── M-3.mzML
+│   └── POS
+│       ├── M-1.mzML
+│       ├── M-2.mzML
+│       └── M-3.mzML
+├── UVdata
+│   ├── 紫外吸收图 x 210 nm.jpg
+│   └── 紫外吸收图 x 254 nm.jpg
+├── QIdata
+│   ├── MSP
+│   │   ├── DLM202213701-NEG.msp
+│   │   └── DLM202213701-POS.msp
+│   ├── NEG
+│   │   ├── DLM202213701-ID-NEG.csv
+│   │   └── DLM202213701-M-NEG.csv
+│   └── POS
+│       ├── DLM202213701-ID-POS.csv
+│       └── DLM202213701-M-POS.csv
+└── sampleinfo.xlsx
+```
+
+###  sampleinfo.xlsx
+
+#### sheet1 项目信息
+
+| 项目名称 | 客户单位 | 客户名称 | 联系人名称 | 项目编号     | 样本 | 材料描述信息       | 前处理描述信息        | 复方中是否包含动物 |
+| -------- | -------- | -------- | ---------- | ------------ | ---- | ------------------ | --------------------- | ------------------ |
+| \        | \        | \        | \          | DLM202213701 | \    | 共收到一瓶水煎液。 | 实验操作步骤如下：... | 是                 |
+
+#### sheet2 样品信息
+
+|      | 质谱数据1 | 质谱数据2 | 质谱数据3 | QI定性结果              | QI定量结果             | QI二级MSP            |
+| ---- | --------- | --------- | --------- | ----------------------- | ---------------------- | -------------------- |
+| POS  | M-1.mzML  | M-2.mzML  | M-3.mzML  | DLM202213701-ID-POS.csv | DLM202213701-M-POS.csv | DLM202213701-POS.msp |
+| NEG  | M-1.mzML  | M-2.mzML  | M-3.mzML  | DLM202213701-ID-NEG.csv | DLM202213701-M-NEG.csv | DLM202213701-NEG.msp |
+
+
+

@@ -1,0 +1,99 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: 数据整理
+required:
+    - path
+    - params
+    - compare
+properties:
+    path:
+        type: object
+        required:
+            - rawfile
+        properties: &id001
+            rawfile:
+                type: string
+                description: 原始数据保存路径
+            datafile:
+                type: string
+                default: "oecloud/rawdata/datafile.txt"
+                description: 数据保存文件
+            infofile:
+                type: string
+                default: "oecloud/rawdata/infofile.txt"
+                description: 信息保存文件
+            classfile:
+                type: string
+                default: "oecloud/rawdata/classfile.yaml"
+                description: 分组信息保存文件
+            classtypefile:
+                type: string
+                default: "oecloud/rawdata/classtype.xlsx"
+                description: 分组信息保存文件
+            config_savepath:
+                type: string
+                default: "oecloud/config"
+                description: config保存路径
+    compare: 
+        type: object
+        patternProperties:
+            ".*":
+                type: object
+                required:
+                    - name
+                    - rawname
+                    - group
+                    - groupnum
+                    - paired
+                    - p-value_method
+                    - adjust_p-value_method
+                properties:
+                    name:
+                        type: string
+                        description: 比较组名称
+                    rawname:
+                        type: string
+                        description: 原始比较组名称
+                    group: &id002
+                        type: array
+                        description: 比较组组别
+                    groupnum:
+                        type: integer
+                        description: 组别数量
+                    paired:
+                        type: boolean
+                        description: p值计算方法
+                    p-value_method:
+                        type: string
+                        description: p值计算方法
+                    adjust_p-value_method:
+                        type: string
+                        description: adjustp值计算方法
+    params:
+        type: object
+        required:
+            - sample
+            - all_group
+            - main_group
+            - main_group-qc
+            - main_compare
+        properties:
+            sample:
+                type: array
+                description: 样本名
+            all_group:
+                type: object
+                description: 分组名
+                propertyNames:
+                    pattern: "^[A-Za-z0-9-_ ]+$"
+            main_group:
+                type: array
+                description: 主要分组
+            main_group-qc:
+                type: array
+                description: 除QC外的主要分组
+            all_compare:
+                type: object
+                description: 所有比较组
+            main_compare:
+                type: array
+                description: 主要比较组

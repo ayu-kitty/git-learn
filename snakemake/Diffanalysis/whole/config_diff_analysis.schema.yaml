@@ -1,0 +1,112 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: 多元统计分析
+required:
+    - path
+    - compare
+properties:
+    path:
+        type: object
+        properties:
+            rawdatafile:
+                type: string
+                default: "oecloud/rawdata/rawdatafile.txt"
+                description: 原始数据来源文件
+            datafile:
+                type: string
+                default: "oecloud/rawdata/datafile.txt"
+                description: 预处理数据来源文件
+            classfile:
+                type: string
+                default: "oecloud/rawdata/classfile.yaml"
+                description: 分组信息来源文件
+            classtypefile:
+                type: string
+                default: "oecloud/rawdata/classtype.xlsx"
+                description: 分组绘图参数文件
+            infofile:
+                type: string
+                default: "oecloud/rawdata/infofile.txt"
+                description: 分组信息来源文件
+            comparefile:
+                type: string
+                default: "oecloud/rawdata/compare.yaml"
+                description: 分组信息来源文件            
+            diff_ana_rds_savepath:
+                type: string
+                default: "oecloud/diff_ana_vip"
+                description: 多元统计运算结果保存路径
+            diff_filter_rds_savepath:
+                type: string
+                default: "oecloud/diff_filter"
+                description: 多元统计运算结果保存路径
+            mulstatistics_rds_savepath:
+                type: string
+                default: "oecloud/mulstatisticsanalyst"
+                description: 多元统计运算结果保存路径
+            config_savepath:
+                type: string
+                default: "oecloud/config"
+                description: config保存路径
+    params:
+        type: object
+        properties:
+            imagetype:
+                type: array
+                default:
+                    - png
+                    - pdf
+                description: 图片保存格式
+            imagetype_other:
+                type: array
+                default:
+                    - html
+                description: 图片保存格式
+            diff_filter:
+                type: object
+                properties:
+                    log:
+                        type: boolean
+                        default: false
+                        description: 是否经过log处理
+                    fcfilter:
+                        type: array
+                        default:
+                            - 1.2
+                            - 1.5
+                            - 2
+                        description: FC筛选标准
+                    fcfiltertype:
+                        type: string
+                        default: '+-'
+                        description: 上下调筛选情况
+                    errorptofcfilter:
+                        type: number
+                        default: 2
+                        description: VIP失败后FC筛选标准
+                    vipfilter:
+                        type: number
+                        default: 0
+                        description: VIP筛选标准
+                    pfilter:
+                        type: number
+                        default: 0.05
+                        description: p-value筛选标准
+                    adjpfilter:
+                        type: number
+                        default: 0
+                        description: adjp-value筛选标准
+    compare: 
+        type: object
+        patternProperties:
+            ".*":
+                type: object
+                required:
+                    - rawname
+                    - group
+                properties:
+                    rawname:
+                        type: string
+                        description: 原始比较组名称
+                    group: 
+                        type: array
+                        description: 比较组组别

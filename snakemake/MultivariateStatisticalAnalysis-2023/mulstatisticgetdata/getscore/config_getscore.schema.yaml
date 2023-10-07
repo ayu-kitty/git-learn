@@ -1,0 +1,21 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: 获取多元统计运算后数据
+required:
+    - path
+    - compare
+properties:
+    path:
+        type: object
+        required:
+            - projectpath
+        properties: &id001
+            projectpath:
+                type: string
+                default: "多元统计分析"
+                description: 项目结果路径
+            mulstatistics_rds_savepath:
+                type: string
+                default: "oecloud/mulstatisticsanalyst"
+                description: 多元统计运算结果保存路径
+    compare: 
+        type: object

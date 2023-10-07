@@ -1,0 +1,116 @@
+---
+title: "相关性图绘制"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{相关性图绘制}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+`map_common_corrplot`函数为绘制相关性图使用。
+
+`map_common_corrplot2`函数为绘制两种不同图形相关性图使用。
+
+`map_common_corrplot3`函数为绘制样本之间相关性图使用。
+
+## 数据准备
+
+数据为dataframe或matrix格式,数据格式如下：
+
+```{r}
+set.seed(111)
+test <- matrix(rnorm(200), 20, 10)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:10, sep = "")
+rownames(test) <- paste("Gene", 1:20, sep = "")
+```
+
+```{r include = FALSE,warning = FALSE,results = 'hide'}
+library("DT")
+library("lmbio")
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+## 绘图使用
+
+```{r fig.height = 10,fig.width = 10,warning = FALSE,message = F,results = "hide"}
+map_common_corrplot(filename = test,
+                    imagetype = NA,
+                    savecorr = F)
+```
+
+## 进阶使用
+
+### 示例1 显著性星号显示
+
+```{r fig.height = 10,fig.width = 10,warning = FALSE,message = F,results = "hide"}
+map_common_corrplot(filename = test,
+                    sig.level = c("0.05", "0.01", "0.001"),
+                    imagetype = NA,
+                    savecorr = F)
+```
+
+### 示例2 上下三角全部显示
+
+```{r fig.height = 10,fig.width = 10,warning = FALSE,message = F,results = "hide"}
+map_common_corrplot(filename = test,
+                    type = "full",
+                    imagetype = NA,
+                    savecorr = F)
+```
+
+### 示例3 数据不转置分析
+
+```{r fig.height = 10,fig.width = 10,warning = FALSE,message = F,results = "hide"}
+map_common_corrplot(filename = test,
+                    transx = F,
+                    imagetype = NA,
+                    savecorr = F)
+```
+
+### 示例4 上下三角不同模式显示
+
+```{r fig.height = 10,fig.width = 10,warning = FALSE,message = F,results = "hide"}
+map_common_corrplot2(filename = test,
+                     imagetype = NA,
+                     savecorr = F)
+```
+
+### 示例5 样本相关性
+
+```{r fig.height = 10,fig.width = 10,warning = FALSE,message = F,results = "hide"}
+map_common_corrplot3(filename = test,
+                     imagetype = NA,
+                     savecorr = F)
+```
+
+### 示例6 两套数据进行相关性计算
+
+```{r}
+test2 <- matrix(rnorm(100), 10, 10)
+test2 <- as.data.frame(test2)
+colnames(test2) <- paste("Test", 1:10, sep = "")
+rownames(test2) <- paste("META", 1:10, sep = "")
+```
+
+```{r echo=FALSE}
+datatable(test2,options = list(scrollX = TRUE))
+```
+
+```{r fig.height = 10,fig.width = 10,warning = FALSE,message = F,results = "hide"}
+map_common_corrplot(filename = test,
+                    filenamey = test2,
+                    imagetype = NA,
+                    savecorr = F)
+```
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

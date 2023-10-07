@@ -1,0 +1,98 @@
+---
+title: "相关性网络图绘制"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{相关性网络图绘制}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+`map_common_corrnetwork`函数为绘制相关性网络图使用。
+
+## 数据准备
+
+数据为dataframe格式,数据格式如下：
+
+```{r}
+set.seed(111)
+test <- matrix(abs(rnorm(400)), 20, 20)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:20, sep = "")
+rownames(test) <- paste("Gene", 1:20, sep = "")
+```
+
+```{r include = FALSE,warning = FALSE,results = 'hide'}
+library("DT")
+library("lmbio")
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+
+## 绘图使用
+
+```{r fig.height = 8,fig.width = 8,warning = FALSE,message = F,results = "hide"}
+plot <- map_common_corrnetwork(filename = test,
+                               corfilter = 0.1,
+                               pfilter = 0.5,
+                               savecorr = F,
+                               imagetype = NA)
+```
+
+## 进阶使用
+
+### 示例1 修改网络图分布
+
+```{r fig.height = 8,fig.width = 8,warning = FALSE,message = F,results = "hide"}
+plot <- map_common_corrnetwork(filename = test,
+                               corfilter = 0.1,
+                               pfilter = 0.5,
+                               savecorr = F,
+                               algorithm = "nicely",
+                               imagetype = NA)
+```
+
+### 示例2 计算样本相关性
+
+```{r fig.height = 8,fig.width = 8,warning = FALSE,message = F,results = "hide"}
+plot <- map_common_corrnetwork(filename = test,
+                               transx = F,
+                               corfilter = 0.1,
+                               pfilter = 0.5,
+                               savecorr = F,
+                               imagetype = NA)
+```
+
+### 示例3 两套数据进行相关性计算
+
+```{r}
+test2 <- matrix(rnorm(400), 20, 20)
+test2 <- as.data.frame(test2)
+colnames(test2) <- paste("Test", 1:20, sep = "")
+rownames(test2) <- paste("META", 1:20, sep = "")
+```
+
+
+```{r echo=FALSE}
+datatable(test2,options = list(scrollX = TRUE))
+```
+
+```{r fig.height = 10,fig.width = 10,warning = FALSE,message = F,results = "hide"}
+plot <- map_common_corrnetwork(filename = test,
+                               filenamey = test2,
+                               corfilter = 0.1,
+                               pfilter = 0.5,
+                               savecorr = F,
+                               imagetype = NA)
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

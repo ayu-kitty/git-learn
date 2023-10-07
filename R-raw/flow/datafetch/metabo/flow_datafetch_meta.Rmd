@@ -1,0 +1,137 @@
+---
+title: "代谢数据整理"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{代谢数据整理}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(lmbio)
+```
+
+# GCMS
+
+测试数据路径:`r lmbio::databasepath("database/test/2023-04-12代谢数据处理测试",exist = F)`
+
+## 示例1 GCMS使用
+
+```
+datafetch_untargetgcms(filename = "Area_1_2022824173.txt")
+```
+
+# LCMS
+
+测试数据路径:`r lmbio::databasepath("database/test/2023-04-19非靶LCMS测试数据",exist = F)`
+
+## 示例1 常规使用
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv")
+```
+## 示例2 不筛选保留时间
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               saveRT=F)
+```
+
+## 示例3 修改score打分标准
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               score = 30)
+```
+
+## 示例4 修改二级筛选标准
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               fragscore = 30)
+```
+
+## 示例5 保留肽段定性结果
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               peptide = T)
+```
+
+## 示例6 使用峰面积归一化
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               mode = "raw",
+                               deal = "峰面积归一化")
+```
+
+## 示例7 使用内标归一化
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               mode = "raw",
+                               deal = "内标归一化",
+                               neglab = "rt_mz",
+                               poslab = "rt_mz")
+```
+
+
+## 示例8 人为挑选代谢物
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               meta = "代谢物名")
+```
+
+## 示例9 仅保留定性到的矩阵
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               merge = F)
+```
+
+## 示例10 不进行保留时间校正
+
+```
+data <- datafetch_untargetlcms(code.negID = "DLM20223286-NEG-ID.csv",
+                               code.posID = "DLM20223286-POS-ID.csv",
+                               code.negM = "DLM20223286-NEG-M.csv", 
+                               code.posM = "DLM20223286-POS-M.csv",
+                               adjustRT = F)
+```

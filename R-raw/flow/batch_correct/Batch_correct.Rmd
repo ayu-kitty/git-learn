@@ -1,0 +1,78 @@
+---
+title: "蛋白和代谢数据批次矫正"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{蛋白和代谢数据批次矫正}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# 蛋白和代谢数据批次矫正
+
+测试数据和结果路径:`/data/hstore1/database/test/2023-04-21批次矫正测试`
+
+
+## 数据准备
+
+表达矩阵.xlsx和批次信息.xlsx
+
+### 表达矩阵.xlsx（必须）
+
+与报告中的数据格式一致
+
+### 批次信息.xlsx（必须）
+必需包含sample,batch,class三列,order列根据批次校正算法决定
+
+- sample：在数据矩阵中的样本名
+- batch：样本对应的批次
+- class：样本分类，QC样本对应QC
+- order：样本上机顺序
+
+| sample  | batch | class | order |
+| ------- | ----- | ---- | ---- |
+| QC1-DOE | 1   |  QC  | 1 |
+| QC2-DOE | 1   | QC  | 2 |
+| sample1 | 2   | S   | 3 |
+| sample2  | 2   |S  | 4 |
+
+
+## 运行脚本
+
+```
+# statTarget
+
+Batch_correct  -i 表达矩阵.xlsx -si 批次信息.xlsx -m statTarget
+
+# MetNormalizer
+
+Batch_correct  -i 表达矩阵.xlsx -si 批次信息.xlsx -m MetNormalizer
+
+# Combat
+
+Batch_correct  -i 表达矩阵.xlsx -si 批次信息.xlsx -m Combat
+```
+
+### 参数说明
+
+|短参数  |长参数 |功能 |
+| ------- | ----- | ---- |
+| -i | --input | 数据矩阵.xlsx |
+| -sp | --savepath | 保存数据路径 |
+| -si | --saminfo | 批次信息的文件|
+| -m | --method | 去批次的方法：SERRF,statTarget,MetNormalizer和Combat |
+| -mc | --minqc | MetNormalizer参数：最少qc样本数 |
+| -ms | --minsample | statTarget参数：MetNormalizer参数：最少sample样本数 |
+| -fr | --Frule | statTarget参数：80%过滤原则 |
+| -ml | --MLmethod | statTarget参数：基于QC的信号校正的机器学习方法,QCRFSC:随机森林,QCRLSC:LOESS信号 |
+| -qs | --QCspan | statTarget参数：QCRLSC的平滑参数，用于控制QCRLSS方法中的偏差-方差平衡,为0表示广义交叉验证,防止过拟合 |
+| -im | --imputeM | statTarget参数：缺失值填充方法 |
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

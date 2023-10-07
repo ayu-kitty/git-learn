@@ -1,0 +1,93 @@
+---
+title: "数据预处理分析流程"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{数据预处理分析流程}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## 数据准备
+
+数据为dataframe格式,数据格式如下：
+
+```{r}
+data <- data.frame(A1 = c(0,abs(rnorm(99))),
+                   A2 = c(0,abs(rnorm(99))),
+                   A3 = c(0,abs(rnorm(99))),
+                   B1 = c(0,abs(rnorm(99))),
+                   B2 = abs(rnorm(100)),
+                   B3 = abs(rnorm(100)))
+class <- data.frame(class = c("A","A","A","B","B","B"))
+row.names(class) <- colnames(data)
+```
+
+```{r include = FALSE,warning = FALSE,results = 'hide'}
+library("DT")
+library("lmbio")
+```
+
+
+```{r echo=FALSE}
+datatable(data,options = list(scrollX = TRUE))
+```
+
+```{r echo=FALSE}
+datatable(class,options = list(scrollX = TRUE))
+```
+
+## 示例
+
+```{r}
+predata <- predealdataforfile(datafile = data,
+                              classfile = class)
+```
+
+```{r echo=FALSE}
+datatable(predata,options = list(scrollX = TRUE))
+```
+
+## 命令行调用方式
+
+```
+flow_predealdata_Analyze
+  -h, --help            show this help message and exit
+  -df DATAFILE [DATAFILE ...], --datafile DATAFILE [DATAFILE ...]
+                        数据矩阵文件,如果是xlsx文件以`数据矩阵.xlsx 数据矩阵`形式传参
+  -cf CLASSFILE [CLASSFILE ...], --classfile CLASSFILE [CLASSFILE ...]
+                        分组文件,如果是xlsx文件以`数据矩阵.xlsx 分组`形式传参
+  -s RESULTSAVEPATH, --resultsavepath RESULTSAVEPATH
+                        结果存储路径
+  -mrp MISSVARREMOVEPERCENT, --missvarremovepercent MISSVARREMOVEPERCENT
+                        缺失值筛选比例,默认0.5
+  -nmrg, --nmissvarremovebygroup
+                        是否按组进行缺失值比例计算,使用参数将不按组进行计算
+  -mvf {none,mean_half,halfmin,valuemin,min,mean,median,knn_var,knn_smp,ppca,bpca,svdlmpute}, --missvarfillmethod {none,mean_half,halfmin,valuemin,min,mean,median,knn_var,knn_smp,ppca,bpca,svdlmpute}
+                        缺失值填充方式,包含none,mean_half,halfmin,valuemin,min,mean,med
+                        ian,knn_var,knn_smp,ppca,bpca,svdlmpute
+  -rn {NULL,SumNorm,MedianMeanNorm,MedianNorm,QuantileNorm,SamplePQN,GroupPQN,CompNorm}, --rowNorm {NULL,SumNorm,MedianMeanNorm,MedianNorm,QuantileNorm,SamplePQN,GroupPQN,CompNorm}
+                        归一化方式,包含NULL,MedianMeanNorm,SumNorm,MedianNorm,Quantil
+                        eNorm,SamplePQN(ref需提供样本名),GroupPQN(ref需提供组名),CompNorm
+                        (ref需提供蛋白或者代谢名),SpecNorm(ref需提供样本名)
+  -tn {NULL,LogNorm,SrNorm,CrNorm}, --transNorm {NULL,LogNorm,SrNorm,CrNorm}
+                        转化方式,包含LogNorm,SrNorm,CrNorm
+  -sn {MeanCenter,AutoNorm,ParetoNorm,RangeNorm}, --scaleNorm {MeanCenter,AutoNorm,ParetoNorm,RangeNorm}
+                        标准化方式,包含MeanCenter,AutoNorm,ParetoNorm,RangeNorm
+  -r REF, --ref REF     归一化方式提供参考样本或者特征的参数
+  -fi {rsd,nrsd,mean,sd,iqr,mad,median,none}, --filter {rsd,nrsd,mean,sd,iqr,mad,median,none}
+                        数量筛选方式,默认为mean,包含rsd,nrsd,mean,sd,iqr,mad,median,none
+  -re REMAIN.NUM, --remain.num REMAIN.NUM
+                        特征筛选上限,默认为100000,输入0为自动筛选数量
+  -nqf, --nqcFilter     是否进行QC样本的rsd筛选
+  -rs RSD, --rsd RSD    QC样本rsd筛选范围,默认30
+
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

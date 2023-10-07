@@ -1,0 +1,366 @@
+---
+title: "空代拟时序分析"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{空代拟时序分析}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r warning = FALSE,message = F,results = 'hide',include=FALSE}
+suppressMessages(library("lmbio"))
+```
+
+#  拟时序函数
+
+## 拟时序分析函数
+
+### 拟时序分析函数`pseudotimeanalyst()`
+
+`pseudotimeanalyst()`是进行拟时序分析。
+
+```
+# 参数如下：
+#' @param filtermz 挑选mz方法为filtermz时，提供需要的mz
+#' @param reduction_method 降维方法
+#' @param samplename 样本名称
+#' @param mode 离子模式
+#' @param rdspath sscc中间rds文件路径
+#' @param savepath 保存路径
+#' @param ... 见[monocle::orderCells()]
+```
+
+#### 示例 常规调用
+
+```{r eval = FALSE}
+pseudotimeanalyst(samplename = "LN3",
+                  mode = "neg")
+```
+
+#### 示例 数据来源与保存路径
+```{r eval = FALSE}
+pseudotimeanalyst(rdspath = "./sample/cluster/sscc/", # 默认路径为./sample/cluster/sscc/
+                  savepath = "./sample/cluster/pseudotime/", # 默认路径为./sample/cluster/pseudotime/
+                  samplename = "LN3",
+                  mode = "neg")
+```
+
+#### 示例 根据sscc聚类选择
+
+```{r eval = FALSE}
+pseudotimeanalyst(samplename = "LN3",
+                  mode = "neg",
+                  selectcluster = c(1,2)) # 使用1和2进行拟时序分析
+```
+
+#### 示例 自选mz
+
+```{r eval = FALSE}
+pseudotimeanalyst(samplename = "LN3",
+                  mode = "neg",
+                  flitermethod = "filtermz", # monocle,Seurat,filtermz,none
+                  filtermz = c(70.1,70.2,.....))
+```
+
+### 批量拟时序分析函数`mulpseudotimeanalyst()`
+
+`mulpseudotimeanalyst()`是批量进行拟时序分析。
+
+```
+# 参数如下：
+#' @param rdspath 数据路径
+#' @param moderange 正负离子模式
+#' @param anamoudle 分析模块
+#' @param wantsample 想处理的样本名
+#' @param delsample 不想处理的样本名
+#' @param ... 见anamoudle函数
+
+```
+
+#### 示例 常规调用
+
+```{r eval = FALSE}
+mulpseudotimeanalyst()
+```
+
+#### 示例 数据来源与保存路径
+```{r eval = FALSE}
+mulpseudotimeanalyst(rdspath = "./sample/cluster/sscc/", # 默认路径为./sample/cluster/sscc/
+                     savepath = "./sample/cluster/pseudotime/") # 默认路径为./sample/cluster/pseudotime/
+```
+
+#### 示例 指定运行的文件
+```{r eval = FALSE}
+mulpseudotimeanalyst(wantsample = "LN3")
+```
+
+#### 示例 指定不想运行的文件
+```{r eval = FALSE}
+mulpseudotimeanalyst(delsample = "LN3")
+```
+
+## 拟时序数据提取及可视化函数
+
+### 批量拟时序可视化函数`Mulgetpseudotime()`
+
+`Mulgetpseudotime()`批量对拟时序数据进行数据获取及可视化。
+
+```
+# Mulgetpseudotime()包含以下函数:
+
+Mulgetrdsdata() # 批量运行函数
+
+# 调用方式
+Mulgetrdsdata(rdspath = rdspath,
+              moderange = moderange,
+              anamoudle = getpseudotime_data,
+              savepath = savepath,
+              ...)
+# 可调用函数
+getpseudotime_data() # 拟时序数据提取
+getpseudotime_plotordering() # mz筛选图
+getpseudotime_Cluster() # sscc聚类的拟时序图
+getpseudotime_ClustertoState() # sscc聚类及State分面的拟时序图
+getpseudotime_Pseudotime() # 拟时序图
+getpseudotime_PseudotimetoCluster() # Cluster分面的拟时序图
+getpseudotime_State() # State的拟时序图
+getpseudotime_Clusterdensity() # 拟时序密度图
+getpseudotime_Clusterdensity2() # Cluster分面的拟时序密度图
+getpseudotime_ClusterdensitytoState() # State分面的拟时序密度图
+getpseudotime_Pseudotimeheatmap() # 拟时序图成像图
+getpseudotime_Clusterexpress() # 强度分布图
+getpseudotime_ClustertoSample() # sscc聚类及Sample分面的拟时序图
+getpseudotime_PseudotimetoSample() # Sample分面的拟时序图
+getpseudotime_ClusterdensitytoSample() # Sample分面的拟时序密度图
+getpseudotime_ClusterdensitytoSample2() # Sample及Cluster分面的拟时序密度图
+getpseudotime_mz() # mz强度的拟时序图
+getpseudotime_mztoSample() # mz强度及Sample分面的拟时序图
+
+# 参数如下：
+#' @param moderange 正负离子模式
+#' @param rdspath rds数据路径
+#' @param annosample
+#' @param savepath 保存路径
+#' @param asp 成像图比例
+#' @param ... 见[Mulgetrdsdata()]
+```
+
+#### 示例 常规调用
+
+```{r eval = FALSE}
+Mulgetpseudotime()
+```
+
+#### 示例 数据来源与保存路径
+```{r eval = FALSE}
+Mulgetpseudotime(rdspath = "./sample/cluster/pseudotime/", # 默认路径为./sample/cluster/pseudotime/
+                 savepath = "./sample/map/pseudotime/") # ./sample/map/pseudotime/
+```
+
+#### 示例 指定运行的文件
+```{r eval = FALSE}
+Mulgetpseudotime(wantsample = "LN3")
+```
+
+#### 示例 指定不想运行的文件
+```{r eval = FALSE}
+Mulgetpseudotime(delsample = "LN3")
+```
+
+#### 示例 添加相关分析
+```{r eval = FALSE}
+Mulgetpseudotime(annosample = T)
+```
+
+#### 示例 添加相关分析
+```{r eval = FALSE}
+Mulgetpseudotime(annosample = T)
+```
+
+#### 示例 成像图比例
+```{r eval = FALSE}
+Mulgetpseudotime(asp = 1)
+```
+
+```{r eval = FALSE}
+Mulgetpseudotime(asp = 2)
+```
+
+### 底层函数1-拟时序数据提取`getpseudotime_data()`
+
+#### 示例 常规调用
+
+```{r eval = FALSE}
+Mulgetpseudotime()
+```
+
+#### 示例 修改调用路径
+
+```{r eval = FALSE}
+Mulgetpseudotime(datapath = "./sample/cluster/pseudotime/") # 默认路径为./sample/cluster/pseudotime/)
+```
+
+
+### 数据准备
+
+```{r}
+suppressMessages(library("Cardinal"))
+mse <- simulateImage(preset=1, npeaks=10)
+run(mse) <- "A"
+mse$samplename <- "A"
+spectra(mse) <- (spectra(mse)+runif(n =length(spectra(mse)),min = 20,max = 100))
+ssccdata <- imzmltosscc(filename = mse,savedata = F)
+pseudotimedata <- pseudotimeanalyst(filename = ssccdata,savedata = F)
+
+mse2 <- mse
+run(mse2) <- "B"
+mse2$samplename <- "B"
+spectra(mse2) <- (spectra(mse2)+runif(n =length(spectra(mse2)),min = 20,max = 100))
+mse2 <- cbind(mse2,mse)
+ssccdata2 <- imzmltosscc(filename = mse2,savedata = F)
+pseudotimedata2 <- pseudotimeanalyst(filename = ssccdata2,savedata = F)
+
+```
+
+
+### 底层函数2-mz筛选图`getpseudotime_plotordering()` 
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+getpseudotime_plotordering(filename = pseudotimedata,
+                           imagetype = NA)
+```
+
+### 底层函数3-sscc聚类的拟时序图`getpseudotime_Cluster()` 
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+getpseudotime_Cluster(filename = pseudotimedata,
+                      imagetype = NA)
+```
+
+### 底层函数4-sscc聚类及State分面的拟时序图`getpseudotime_ClustertoState()` 
+
+```{r fig.height = 12,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_ClustertoState(filename = pseudotimedata,
+                             imagetype = NA)
+```
+
+### 底层函数5-拟时序图`getpseudotime_Pseudotime()` 
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+getpseudotime_Pseudotime(filename = pseudotimedata,
+                         imagetype = NA)
+```
+
+### 底层函数6-Cluster分面的拟时序图`getpseudotime_PseudotimetoCluster()` 
+
+```{r fig.height = 12,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_PseudotimetoCluster(filename = pseudotimedata,
+                                  imagetype = NA)
+```
+
+### 底层函数7-State的拟时序图`getpseudotime_State()` 
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+getpseudotime_State(filename = pseudotimedata,
+                    imagetype = NA)
+```
+
+### 底层函数8-拟时序密度图`getpseudotime_Clusterdensity()` 
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+getpseudotime_Clusterdensity(filename = pseudotimedata,
+                             imagetype = NA)
+```
+
+### 底层函数9-Cluster分面的拟时序密度图`getpseudotime_Clusterdensity2()` 
+
+```{r fig.height = 12,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_Clusterdensity2(filename = pseudotimedata,
+                              imagetype = NA)
+```
+
+### 底层函数10-State分面的拟时序密度图`getpseudotime_ClusterdensitytoState()` 
+
+```{r fig.height = 12,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_ClusterdensitytoState(filename = pseudotimedata,
+                                    imagetype = NA)
+```
+
+### 底层函数11-拟时序图成像图`getpseudotime_Pseudotimeheatmap()` 
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+getpseudotime_Pseudotimeheatmap(filename = pseudotimedata,
+                                imagetype = NA)
+```
+
+### 底层函数12-强度分布图`getpseudotime_Clusterexpress()` 
+
+```{r fig.height = 12,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_Clusterexpress(filename = pseudotimedata,
+                             imagetype = NA)
+```
+
+```{r fig.height = 12,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_Clusterexpress(filename = pseudotimedata,
+                             seqrange = 1:10,
+                             imagetype = NA)
+```
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+getpseudotime_Clusterexpress(filename = pseudotimedata,
+                             seqrange = NULL,
+                             mapmz = mz(mse)[1],
+                             imagetype = NA)
+```
+
+### 底层函数13-sscc聚类及Sample分面的拟时序图`getpseudotime_ClustertoSample()` 
+
+```{r fig.height = 12,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_ClustertoSample(filename = pseudotimedata,
+                              samplename = "all",
+                              imagetype = NA)
+```
+
+### 底层函数14-Sample分面的拟时序图`getpseudotime_PseudotimetoSample()` 
+
+```{r fig.height = 12,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_PseudotimetoSample(filename = pseudotimedata2,
+                                 imagetype = NA)
+```
+
+### 底层函数15-Sample分面的拟时序密度图`getpseudotime_ClusterdensitytoSample()` 
+
+```{r fig.height = 6,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_ClusterdensitytoSample(filename = pseudotimedata2,
+                                     imagetype = NA)
+```
+
+### 底层函数16-Sample及Cluster分面的拟时序密度图`getpseudotime_ClusterdensitytoSample2()` 
+
+```{r fig.height = 6,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_ClusterdensitytoSample2(filename = pseudotimedata2,
+                                      imagetype = NA)
+```
+
+### 底层函数17-mz强度的拟时序图`getpseudotime_mz()` 
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+getpseudotime_mz(filename = pseudotimedata2,
+                 filtermz = mz(mse)[1],
+                 imagetype = NA)
+```
+
+### 底层函数18-mz强度及Sample分面的拟时序图`getpseudotime_mztoSample()` 
+
+```{r fig.height = 6,fig.width = 12,warning = FALSE,message = F,results = "hide"}
+getpseudotime_mztoSample(filename = pseudotimedata2,
+                         filtermz = mz(mse)[1],
+                         imagetype = NA)
+```

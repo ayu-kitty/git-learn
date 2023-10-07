@@ -1,0 +1,41 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: 多元统计分析
+required:
+    - path
+    - compare
+properties:
+    path:
+        type: object
+        required:
+            - datafile
+            - classfile
+        properties:
+            datafile:
+                type: string
+                description: 数据来源文件
+            classfile:
+                type: string
+                description: 分组信息来源文件
+            config_savepath:
+                type: string
+                default: "oecloud/config"
+                description: config保存路径
+            mulstatistics_rds_savepath:
+                type: string
+                default: "oecloud/mulstatisticsanalyst"
+                description: 多元统计运算结果保存路径
+    compare: 
+        type: object
+        patternProperties:
+            ".*":
+                type: object
+                required:
+                    - rawname
+                    - group
+                properties:
+                    rawname:
+                        type: string
+                        description: 原始比较组名称
+                    group: &id002
+                        type: array
+                        description: 比较组组别

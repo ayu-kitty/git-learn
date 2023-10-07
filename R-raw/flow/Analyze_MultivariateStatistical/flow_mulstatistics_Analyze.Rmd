@@ -1,0 +1,127 @@
+---
+title: "多元统计分析流程"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{多元统计分析流程}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## 数据准备
+
+数据为dataframe格式,数据格式如下：
+
+```{r}
+test <- matrix(abs(rnorm(400)), 20, 20)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:20, sep = "")
+rownames(test) <- paste("Gene", 1:20, sep = "")
+```
+
+```{r include = FALSE,warning = FALSE,results = 'hide'}
+library("DT")
+library("lmbio")
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+分组数据的准备,如下：
+```{r}
+class <- list(A = paste("Test", 1:5, sep = ""),
+              B = paste("Test", 6:10, sep = ""),
+              C = paste("Test", 11:15, sep = ""),
+              D = paste("Test", 16:20, sep = ""))
+```
+
+```{r echo=FALSE}
+class
+```
+
+## 数据分析
+
+### PCA分析
+
+```{r}
+result_pca <- mulstatistics_file(datafile = test,
+                                 classfile = class,
+                                 name = "A-vs-B",
+                                 group = c("A","B"),
+                                 mode = "PCA")
+```
+
+### PLS分析
+
+```{r}
+result_pls <- mulstatistics_file(datafile = test,
+                                 classfile = class,
+                                 name = "A-vs-B",
+                                 group = c("A","B"),
+                                 mode = "PLS-DA")
+```
+
+### OPLS分析
+
+```{r}
+result_opls <- mulstatistics_file(datafile = test,
+                                  classfile = class,
+                                  name = "A-vs-B",
+                                  group = c("A","B"),
+                                  mode = "OPLS-DA",
+                                  permI = 20)
+```
+
+## 数据绘图
+
+### 常规图
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_mulstatistics_scoremap(filename = result_pca,
+                           imagetype = NA)
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_mulstatistics_scoremap2(filename = result_pca,
+                            imagetype = NA)
+```
+
+### loading图
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_mulstatistics_loadingmap(filename = result_pca,
+                             imagetype = NA)
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_mulstatistics_loadingmap2(filename = result_pls,
+                              imagetype = NA)
+```
+
+### splot图
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_mulstatistics_splotmap(filename = result_pls,
+                           imagetype = NA)
+```
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_mulstatistics_splotmap2(filename = result_pls,
+                            imagetype = NA)
+```
+
+### 排序检测
+
+```{r fig.height = 6.3,fig.width = 8.1,warning = FALSE,message = F,results = "hide"}
+map_mulstatistics_permutation(filename = result_opls,
+                              imagetype = NA)
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

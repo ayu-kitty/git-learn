@@ -1,0 +1,41 @@
+---
+title: "EMDB2.0数据库搭建流程"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{EMDB3.0数据库搭建流程}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+### EMDB3.0数据库搭建流程
+
+数据路径:`r lmbio::databasepath("database/test/2023-04-17EMDB2.0",exist = F)`
+
+#### 准备QI搜库结果文件 -- 1.cp_QI_file.py
+
+将各个项目的搜库结果（csv格式）从各自的文件夹中复制到TOTAL文件夹中，方便统一处理。在搜库结果文件夹的同级目录运行。
+
+#### 合并QI搜库结果 -- 2.Merge_QI_File.py
+
+对所有csv文件文件进行筛选，按score>50为标准，然后合并至一张表格，并只挑选compuond ID以HMDB开头的化合物（只基于HMDB数据库建库）。（*.csv  Total_cmpd.xlsx去重Total_cmpd_uni.xlsx）
+
+#### 将RT预测结果与HMDB_Database合并 -- 3.merge_predict.py
+
+HMDB_predict_RT.csv + HMDB_DATABASE.xlsx --> hmdb_1300_pred.xlsx
+
+#### 利用预测RT对搜库结果进行筛选-- 4.Build_HMDB.py
+
+保留搜库结果中RT与predict相差在0.5min以内的记录，然后取留下来记录的RT均值作为该物质最终的RT。
+
+Total_cmpd.xlsx去重 + hmdb_1300_pred --> Curated_HMDB_1300.xlsx
+
+#### 整合标品数据库与HMDB预测数据库-- 5.updateQI.py
+
+标品1390.csv + Curated_HMDB_1300.xlsx --> EMDB_database.xlsx

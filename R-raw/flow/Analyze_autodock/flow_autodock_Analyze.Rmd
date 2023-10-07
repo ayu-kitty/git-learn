@@ -1,0 +1,57 @@
+---
+title: "分子对接分析"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{分子对接分析}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# 分子对接流程
+
+测试数据和结果路径:`r lmbio::databasepath("database/test/2023-05-16分子对接",exist = F)`
+
+## 数据准备
+
+数据包含smiles和蛋白ID两列数据。
+
+## 运行脚本
+
+```R
+flow_autodock_Analyze
+```
+
+### 帮助文档
+
+|短参数  |长参数 |功能 |
+| ------- | ----- | ---- |
+| -n | --name | 文件名 |
+| -r | --result | 结果目录，默认分子对接结果 |
+| -s | --smiles | smiles列名，默认Ingredient_Smiles |
+| -p | --protein | 蛋白ID列名，默认UniProtID |
+
+
+## 结果说明
+
+```
+分子对接结果
+├── 1
+│  ├── config  #分析对接参数文件目录
+│  ├── visual  #分子对接结果可视化
+│  ├── ligand_out.pdbqt # 分子对接结果
+│  ├── ligand.pdbqt     # 成分3D结构
+│  ├── ligand.smi       # 成分smiles
+│  ├── protein.pdb      # 靶点结构数据
+│  └── protein.pdbqt    # 靶向3D结构
+├── ...
+└── 分子对接结果.xlsx
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

@@ -1,0 +1,74 @@
+---
+title: "Zscore绘制"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{Zscore绘制}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+`map_common_zscore`函数为绘制z-score图使用。
+
+## 数据准备
+
+数据为dataframe格式,数据格式如下：
+
+```{r}
+test <- matrix(abs(rnorm(100)), 10, 10)
+test <- as.data.frame(test)
+colnames(test) <- paste("Test", 1:10, sep = "")
+rownames(test) <- paste("Gene", 1:10, sep = "")
+colgroup <- data.frame(Group = c(rep("A",5),rep("B",5)))
+rownames(colgroup) <- paste("Test", 1:10, sep = "")
+test <- rbind(t(colgroup),test)
+```
+
+```{r include = FALSE,warning = FALSE,results = 'hide'}
+library("DT")
+library("lmbio")
+```
+
+```{r echo=FALSE}
+datatable(test,options = list(scrollX = TRUE))
+```
+
+## 绘图使用
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+map_common_zscore(filename = test,
+                  imagetype = NA)
+```
+
+## 进阶使用
+
+### 示例1 y轴标签调整
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+map_common_zscore(filename = test,
+                  y.title = "Gene",
+                  imagetype = NA)
+```
+
+### 示例2 x轴范围调整
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+map_common_zscore(filename = test,
+                  xrange = c(-10,10),
+                  imagetype = NA)
+```
+
+### 示例3 图像长宽比调整
+
+```{r fig.height = 6,fig.width = 6,warning = FALSE,message = F,results = "hide"}
+map_common_zscore(filename = test,
+                  aspect.ratio = 1,
+                  imagetype = NA)
+```
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

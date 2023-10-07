@@ -1,0 +1,187 @@
+---
+title: "中药入血成分分析流程"
+output:
+  html_document:
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{中药入血成分分析流程}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# package TCMreport
+
+中药入血成分分析流程
+
+- 1.QI数据预处理
+- 2.绘制样本色谱图
+- [可选] 绘制代谢网络图
+- 3.绘制中药成分EIC图+质谱图
+- 4.绘制中药成分分类饼图
+- 5.入血成分手动检查
+- 6.生成oebio报告
+- 7.文件压缩打包
+-
+## Get started
+
+## 注意事项
+
+```markdown
+- 指向mzML文件的路径中不要包含中文字符
+- QC文件只能命名为QC.mzML（或者保证定量文件中列名为QC）
+- mzML为 Profile模式，不要中心化 <画出的EIC好看>
+- 测试文件目录 /data/hstore1/database/test/2023-05-30BloodReport
+```
+## CMD调用
+
+```shell
+# 中药入血成分析流程
+$ lmtcm blood --help
+Usage: lmtcm blood [OPTIONS]
+
+Options:
+  -I, --input PATH   输入文件的文件夹路径，路径中不能包含中文  [required]
+  -B, --herb         是否分析HERB库,布尔值标记[加上参数即开启]
+  -p, --product      是否分析代谢产物,布尔值标记[加上参数即开启]
+  -fc, --fc INTEGER  判别入血成分的差异倍数
+  --help             Show this message and exit.
+
+# 入血成分手动检查
+$ lmtcm blood_check --help
+Usage: lmtcm blood_check [OPTIONS]
+
+Options:
+  -I, --input PATH  输入文件的文件夹路径，路径中不能包含中文  [required]
+  -S, --skip        是否删除手动检查的入血成分, 默认检查，需填写delCpds.xlsx, 布尔值标记[加上参数--skip跳过检查]
+  -B, --herb        是否分析HERB库,布尔值标记[加上参数即开启]
+  -p, --product     是否分析代谢产物,布尔值标记[加上参数即开启]
+  -r, --raw         是否是删除入血代谢产物,布尔值标记[加上参数删除原方cpd]
+  --help            Show this message and exit.
+
+# 售后
+$ lmtcm blood_feedback --help
+Usage: lmtcm blood_feedback [OPTIONS]
+
+Options:
+  -I, --input PATH  输入文件的文件夹路径，路径中不能包含中文  [required]
+  -t, --type [a|b]  a)添加MS2 b)提供所有候选结果，拓展代谢产物矩阵   [required]
+  --help            Show this message and exit.
+```
+
+**Use Case**
+
+```shell
+@step1 -> @step2 <串行关系>
+# 跳过检查，直接出报告
+lmtcm blood -I /data/hstore4/lumingos/project/DZLM2023050885 --herb
+lmtcm blood_check -I /data/hstore4/lumingos/project/DZLM2023050885 --herb --skip
+# 检查删除特定入血成分后，再出报告
+lmtcm blood -I /data/hstore4/lumingos/project/DZLM2023050885 --herb --product
+lmtcm blood_check -I /data/hstore4/lumingos/project/DZLM2023050885 --herb --product
+lmtcm blood_check -I /data/hstore4/lumingos/project/DZLM2023050885 --herb --product --skip
+
+@step1 入血分析pipeline <step1中命令为并行关系>
+# 不分析HERB库
+lmtcm blood -I /data/hstore4/lumingos/project/DZLM2023050885
+# 分析HERB库
+lmtcm blood -I /data/hstore4/lumingos/project/DZLM2023050885 --herb
+# 分析HERB库+分析代谢产物
+lmtcm blood -I /data/hstore4/lumingos/project/DZLM2023050885 --herb --product
+# 分析HERB库+分析代谢产物+自定义差异倍数
+lmtcm blood -I /data/hstore4/lumingos/project/DZLM2023050885 --herb --product --fc 10
+
+@step2 入血成分检查 <step2中命令为并行关系>
+# 检查这一步传入分析的数据库类型需要和@step1保持一致，如果上面是分析了herb下面也需要添加--herb,如此这样...
+# 删除delCpds.xlsx中的入血成分
+lmtcm blood_check -I /data/hstore4/lumingos/project/DZLM2023050885 --herb
+# 跳过检查，直接出报告和压缩文件
+lmtcm blood_check -I /data/hstore4/lumingos/project/DZLM2023050885 --herb --skip
+```
+
+## 输入文件说明
+
+###  input data directory structure
+测试文件目录： /data/hstore1/database/test/2023-05-30BloodReport
+```markdown
+.
+├── mzmldata
+│   ├── NEG
+│   │   ├── FC-1.mzML
+│   │   ├── FC-2.mzML
+│   │   ├── FC-3.mzML
+│   │   ├── FD-1.mzML
+│   │   ├── FD-2.mzML
+│   │   ├── FD-3.mzML
+│   │   └── TCM_5.mzML
+│   └── POS
+│       ├── FC-1.mzML
+│       ├── FC-2.mzML
+│       ├── FC-3.mzML
+│       ├── FD-1.mzML
+│       ├── FD-2.mzML
+│       ├── FD-3.mzML
+│       └── TCM_5.mzML
+├── QIdata
+│   ├── MSP
+│   │   ├── FR-NEG-Fragment.msp
+│   │   └── FR-POS-Fragment.msp
+│   ├── NEG
+│   │   ├── FR-NEG-ID.csv
+│   │   └── FR-NEG-M.csv
+│   └── POS
+│       ├── FR-POS-ID.csv
+│       └── FR-POS-M.csv
+├── sampleinfo.xlsx
+└── UVdata
+    ├── 紫外吸收图 x 210 nm.jpg
+    └── 紫外吸收图 x 254 nm.jpg
+```
+###  sampleinfo.xlsx
+
+#### sheet1 项目信息
+| 项目名称 | 客户单位 | 客户名称 | 联系人名称 | 项目编号     | 样本 | 材料描述信息       | 前处理描述信息        | 复方中是否包含动物 |
+| -------- | -------- | -------- | ---------- | ------------ | ---- | ------------------ | --------------------- | ------------------ |
+| \        | \        | \        | \          | DLM202213701 | \    | 共收到一瓶水煎液。 | 实验操作步骤如下：... | 否                 |
+#### sheet2 样品信息
+|         |            | POS                 | NEG                 |
+| ------- | ---------- | ------------------- | ------------------- |
+| Blood   | 质谱数据1  | FD-1.mzML           | FD-1.mzML           |
+|         | 质谱数据2  | FD-2.mzML           | FD-2.mzML           |
+|         | 质谱数据3  | FD-3.mzML           | FD-3.mzML           |
+|         | QI定性结果 | FR-POS-ID.csv       | FR-NEG-ID.csv       |
+|         | QI定量结果 | FR-POS-M.csv        | FR-NEG-M.csv        |
+|         | QI二级MSP  | FR-POS-Fragment.msp | FR-NEG-Fragment.msp |
+| TCM     | 质谱数据1  | TCM_5.mzML          | TCM_5.mzML          |
+| Control | 质谱数据1  | FC-1.mzML           | FC-1.mzML           |
+|         | 质谱数据2  | FC-2.mzML           | FC-2.mzML           |
+|         | 质谱数据3  | FC-3.mzML           | FC-3.mzML           |
+
+### delCpds.xlsx
+
+该文件置于 `数据分析/4.定性定量结果/`
+
+**删除成分的id, 来自数据矩阵中Compound ID列**
+
+for example:
+
+| Compound ID                                      |
+| ------------------------------------------------ |
+| TUWRBFMVJOJFCL-UHFFFAOYSA-N                      |
+| XQUFDDXBHJINGZ-UHFFFAOYSA-N                      |
+| Myrtenal_羟基化 + 还原 + 葡萄糖醛酸化_候选2_5.04 |
+
+## output
+```shell
+# 输出文件将用压缩包的形式保存在your-input-data-directory
+your-input-path/
+├── DLM2023****-***-***.zip # output file here!
+├── mzmldata
+├── QIdata
+├── sampleinfo.xlsx
+└── UVdata
+```

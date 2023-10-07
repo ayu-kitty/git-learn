@@ -1,0 +1,64 @@
+---
+title: "EMDB数据库整理"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{EMDB数据库整理}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# EMDB数据库整理 
+
+## 测试数据和结果
+
+测试数据和结果路径:`r lmbio::databasepath("/data/hstore1/database/test/2023-04-24EMDB数据库测试数据",exist = F)`
+
+## 数据格式
+
+需要以ID.csv和.msp结尾的文件，文件名格式如下：
+
+EMDB-DLM202212005-NEG-ID.csv
+
+EMDB-DLM202212005-NEG.msp
+
+需要从此格式文件名中提取项目号DLM202212005，从而提取对应的样本类型
+
+## 运行脚本
+
+```
+EMDB_process_v3 -d /data/hstore1/database/test/2023-04-24EMDB数据库测试数据/QI -f 70 -o /data/hstore1/database/test/2023-04-24EMDB数据库测试数据/test
+
+```
+
+## 参数说明
+
+|短参数  |长参数 |功能 |
+| ------- | ----- | ---- |
+| -d | --directory | 数据存放目录 |
+| -f | --fragmentation_score_threshold |fragmentation score过滤阈值，默认是70 |
+| -o | --out_path |结果输出目录 |
+
+## 结果文件说明
+
+- df_duplicated.csv 可疑列表
+
+- df_unique.csv 唯一cid所对应的可信信息
+
+- df_unique.sdf 唯一cid所对应的sdf
+
+- RT_database.csv 可信列表所对应的保留时间
+
+- trusted_df.csv 可信列表
+
+- trusted_df.msp 可信列表所对应的msp信息
+
+- 时间差异分布图.png 可信列表中标准品保留时间与真实保留时间的差异分布图
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

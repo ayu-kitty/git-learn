@@ -1,0 +1,148 @@
+---
+title: "空代数据提取"
+output:
+  html_document:
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{空代数据提取}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+# 数据提取
+
+## 底层数据提取函数`GetData()`
+
+`GetData()`函数功能是提取数据。平时不直接调用，可通过`GetAllData()`,`GetAreaData()`和`GetClusterData()`调用
+
+```
+# GetData()包含以下函数:
+
+SelectAreaimage()   # 显示选区成像图
+
+# 参数如下：
+#' @param samplename 样本名称
+#' @param samplefrom 样本数据路径
+#' @param areaname 区域名
+#' @param areafrom 区域数据路径
+#' @param mode 正负离子模式
+#' @param mass.range mz范围
+#' @param resolution 分辨率
+#' @param units 分辨率单位
+#' @param asp 图像长宽比
+#' @param getmz 欲获取mz
+#' @param tolerance 对齐参数
+#' @param savemap 逻辑，是否保存图片
+#' @param savemapwd 图片保存路径
+#' @param savedatawd 数据保存路径
+#' @param imagetype 图片格式
+#' @param lightmode 成像模式
+#' @param ... 见[SelectAreaimage()]
+
+```
+
+## 全样本数据提取`GetAllData()`
+
+`GetAllData()`函数功能是提取全样本数据。
+
+```
+# GetAllData()包含以下函数:
+
+GetData() # 提取数据
+
+# 参数如下：
+#' @param samplefrom 样本数据路径
+#' @param mass.range mz范围
+#' @param resolution 分辨率
+#' @param units 分辨率单位
+#' @param saveareawd 区域数据路径
+#' @param getposmz 正离子模式下欲获取mz
+#' @param getnegmz 负离子模式下欲获取mz
+#' @param wmode 正负离子模式
+#' @param ... 见[GetData()]
+
+```
+
+## MSIReader选区数据提取`GetAreaData()`
+
+`GetAreaData()`函数功能是对MSIReader选区结果提取选区数据。
+
+```
+# GetAreaData()包含以下函数:
+
+GetData() # 提取数据
+
+# 参数如下：
+#' @param samplefrom 样本数据路径
+#' @param selectfrom 选区来源路径
+#' @param mass.range mz范围
+#' @param resolution 分辨率
+#' @param units 分辨率单位
+#' @param saveareawd 区域数据路径
+#' @param getposmz 正离子模式下欲获取mz
+#' @param getnegmz 负离子模式下欲获取mz
+#' @param wmode 正负离子模式
+#' @param ... 见[GetData()]
+
+```
+
+## MSIReader选区结果处理`GetMulData()`
+
+`GetMulData()`函数功能是对MSIReader选区结果进行合并、扣除处理。
+
+**根据项目登记单中多区域选区sheet表进行处理**
+
+```
+# 参数如下：
+#' @param selectpath 选区来源路径
+#' @param infopath 项目登记单路径
+
+```
+
+## 聚类选区数据提取`GetClusterData()`
+
+`GetClusterData()`函数功能是对聚类结果提取选区数据。
+
+**根据项目登记单中聚类选区sheet表进行提取**
+
+```
+# GetClusterData()包含以下函数:
+
+GetData() # 提取数据
+
+# 参数如下：
+#' @param samplefrom 样本数据路径
+#' @param clusterfrom cluster数据路径
+#' @param mass.range mz范围
+#' @param resolution 分辨率
+#' @param units 分辨率单位
+#' @param saveareawd 区域数据路径
+#' @param getposmz 正离子模式下欲获取mz
+#' @param getnegmz 负离子模式下欲获取mz
+#' @param wmode 正负离子模式
+#' @param ... 见[GetData()]
+
+```
+
+## 选区与聚类结果提取`GetAreatoCluster()`
+
+`GetAreatoCluster()`是将聚类结果赋予选区结果。
+
+保存`聚类与分区对应关系.xlsx`文件。
+
+```
+# 参数如下：
+#' @param samplefrom 样本数据来源
+#' @param clusterfrom 聚类结果来源
+#' @param selectfrom 选区数据来源
+#' @param savepath 保存路径
+#' @param moderange 正负离子模式
+```
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

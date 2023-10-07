@@ -1,0 +1,56 @@
+---
+title: "蛋白数据处理流程"
+output:
+  html_document: 
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      print: no
+    toc_depth: 5
+vignette: >
+  %\VignetteIndexEntry{蛋白数据处理流程}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# 蛋白数据流程
+
+测试数据路径:`r lmbio::databasepath("/data/hstore1/database/test/2023-04-21蛋白数据处理测试",exist = F)`
+
+
+# 运行脚本
+
+```R
+PD:
+
+Rscript protein_process.r -ip /data/hstore3/Personal_dir/gest/datafetch/PD -s /data/hstore4/workspace/tanfj/蛋白数据处理/PD
+
+PL:
+
+Rscript protein_process.r -ip /data/hstore3/Personal_dir/gest/datafetch/PL -s /data/hstore4/workspace/tanfj/蛋白数据处理/PL
+
+PT:
+
+Rscript protein_process.r -ip /data/hstore3/Personal_dir/gest/datafetch/PT -s /data/hstore4/workspace/tanfj/蛋白数据处理/PT
+
+SP:
+
+Rscript protein_process.r -ip /data/hstore3/Personal_dir/gest/datafetch/SP -s /data/hstore4/workspace/tanfj/蛋白数据处理/SP
+
+LF:
+
+Rscript protein_process.r -ip /data/hstore3/Personal_dir/gest/datafetch/LF -s /data/hstore4/workspace/tanfj/蛋白数据处理/LF
+
+
+```
+
+### 参数说明
+
+|短参数  |长参数 |功能 |
+| ------- | ----- | ---- |
+| -ip | --inputpath | 下机数据文件存放路径，默认当前路径 |
+| -sp | --savepath | 处理后数据保存路径,默认当前路径 |
+
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>
